@@ -1,4 +1,4 @@
-QT += gui widgets core
+QT += gui widgets core concurrent
 
 CONFIG += c++11 static #console
 CONFIG -= app_bundle
@@ -16,10 +16,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    DirectoryGui.cpp
+    DirectoryGui.cpp \
+    fileinfo.cpp
 
 HEADERS += \
-    DirectoryGui.h
+    DirectoryGui.h \
+    fileinfo.h
 
 DESTDIR = C:\Users\bubus\Desktop\release
             #C:\MyStaticQt

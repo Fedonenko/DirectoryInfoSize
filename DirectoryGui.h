@@ -2,6 +2,8 @@
 #define DIRECTORYGUI_H
 
 #include<QtWidgets>
+#include"fileinfo.h"
+#include<QtConcurrent/QtConcurrent>
 
 struct StatisticFiles;
 
@@ -20,6 +22,7 @@ private:
 
     QMap<QString, StatisticFiles> sizeFiles;
     StatisticFiles *StatisticAllFiles;
+    FileInfo *fileInfo;
 
     QStringList listColumn;
     const QString allFiles = "Всего";
@@ -29,27 +32,28 @@ public:
     ~DirectoryGui();
 private:
     ///собирает информацию о количестве и размере файлов
-    void start(const QDir&);
+    //void start(const QDir&);
+    //void startThread(const QDir&);
     ///получает размер в байтах, возвращает в виде более удобночитабельной строки
     QString fileSize(quint64);
-    ///заполняет строку переданную строку таблицы содержимым изкарты
-    void outInTable(int row);
+    ///заполняет строку переданную строку таблицы содержимым из карты
+    //void outInTable(int row);
+    void outInTableThread(int, QMap<QString, StatisticFiles>&);
+
+    void findFilesThread(const QDir dir);
 private slots:
     ///запускает поиск файлов в от корня QTreeWidgetItem
-    void slotFindFiles(const QModelIndex&);
+    //void slotFindFiles(const QModelIndex&);
+    void slotFindFilesThread(const QModelIndex&);
+    ///обновляет значение прогресБара, (max, value)
+    void slotPrBarUpdate(int, int);
+    ///получает статистику и выводит в таблицу
+    void slotEndFileInfo(StatisticFiles *StatisticAllFiles, QMap<QString, StatisticFiles>);
 signals:
 
 };
-///структура для ханения иноформации о файлах с одиннаковым расширение
-struct StatisticFiles
-{
-    quint64 size = 0; //общий размер файлов
-    quint64 amount = 0;//количество файлов
-    void clear(){
-        size = 0;
-        amount = 0;
-    }
-};
+///структура для ханения информации о файлах с одиннаковым расширение
+
 
 
 #endif // DIRECTORYGUI_H
