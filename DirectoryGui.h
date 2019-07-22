@@ -5,7 +5,6 @@
 #include"fileinfo.h"
 #include<QtConcurrent/QtConcurrent>
 Q_DECLARE_METATYPE(StatisticFiles)
-//Q_DECLARE_METATYPE(QMap<QString,StatisticFiles>)
 
 struct StatisticFiles;
 
@@ -34,20 +33,14 @@ public:
     DirectoryGui(QWidget *pwgt = Q_NULLPTR);
     ~DirectoryGui();
 private:
-    ///собирает информацию о количестве и размере файлов
-    //void start(const QDir&);
-    //void startThread(const QDir&);
     ///получает размер в байтах, возвращает в виде более удобночитабельной строки
     QString fileSize(quint64);
-    ///заполняет строку переданную строку таблицы содержимым из карты
-    //void outInTable(int row);
-    void outInTableThread(int, QMap<QString, StatisticFiles>&);
+    ///заполняет переданную строку таблицы содержимым из карты
+    void outInTable(int, QMap<QString, StatisticFiles>&);
 
-    void findFilesThread(const QDir dir);
 private slots:
-    ///запускает поиск файлов в от корня QTreeWidgetItem
-    //void slotFindFiles(const QModelIndex&);
-    void slotFindFilesThread(const QModelIndex&);
+    ///запускает поиск файлов от корня переданного значения модели(в этом или отдельном потоке)
+    void slotFindFiles(const QModelIndex&);
     ///обновляет значение прогресБара, (max, value)
     void slotPrBarUpdate(int, int);
     ///получает статистику и выводит в таблицу
@@ -55,7 +48,6 @@ private slots:
 signals:
 
 };
-///структура для ханения информации о файлах с одиннаковым расширение
 
 
 

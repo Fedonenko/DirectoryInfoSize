@@ -22,6 +22,8 @@ class FileInfo : public QObject
 {
     Q_OBJECT
 private:
+    ///для прокрутки событий при запуске в том же потоке, что б не замирало окно
+    bool isThread;
     int maxPrBar;
     int valuePrBar;
     StatisticFiles StatisticAllFiles;
@@ -30,16 +32,20 @@ private:
 
 
 public:
-    FileInfo( QDir dir = QApplication::applicationDirPath(), QObject *parent = Q_NULLPTR);
+    FileInfo( QDir dir = QApplication::applicationDirPath(), bool isThread = false, QObject *parent = Q_NULLPTR);
     ~FileInfo();
 private:
+    ///собирает информацию о количестве и размере файлов
     void start(const QDir&);
 
     QString fileSize(quint64);
 signals:
+    ///информация для QProgressBar (max, value)
     void prBarInf(int, int);
+    ///отправляет статистику по размерам файлов
     void endFileInfo(const StatisticFiles ,const QMap<QString, StatisticFiles>);
 public slots:
+    ///поиск файлов и сбор статистики по ним
     void slotFindFiles();
 };
 

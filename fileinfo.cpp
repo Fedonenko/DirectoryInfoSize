@@ -1,19 +1,18 @@
 #include"fileinfo.h"
 
-FileInfo::FileInfo(QDir dir, QObject *parent) : QObject(parent),
-    /*StatisticAllFiles(Q_NULLPTR),*/ dir(dir) //, maxPrBar(0), valuePrBar(0)
+FileInfo::FileInfo(QDir dir, bool isThread, QObject *parent) : QObject(parent),
+    isThread(isThread), dir(dir)
 {
     maxPrBar = 1;
     valuePrBar = 0;
-    //StatisticAllFiles = new StatisticFiles;
 }
 FileInfo::~FileInfo(){
-//    delete StatisticAllFiles;
-//    StatisticAllFiles = Q_NULLPTR;
 }
 
 void FileInfo::start(const QDir &dir){
-    //QCoreApplication::processEvents();
+    if(!isThread){
+        QCoreApplication::processEvents();
+    }
     QStringList listFile = dir.entryList(QDir::Files);
     maxPrBar += listFile.size();
     qint64 fileSize;
