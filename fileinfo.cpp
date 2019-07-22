@@ -1,19 +1,19 @@
 #include"fileinfo.h"
 
 FileInfo::FileInfo(QDir dir, QObject *parent) : QObject(parent),
-    StatisticAllFiles(Q_NULLPTR), dir(dir) //, maxPrBar(0), valuePrBar(0)
+    /*StatisticAllFiles(Q_NULLPTR),*/ dir(dir) //, maxPrBar(0), valuePrBar(0)
 {
     maxPrBar = 1;
     valuePrBar = 0;
-    StatisticAllFiles = new StatisticFiles;
+    //StatisticAllFiles = new StatisticFiles;
 }
 FileInfo::~FileInfo(){
-    delete StatisticAllFiles;
-    StatisticAllFiles = Q_NULLPTR;
+//    delete StatisticAllFiles;
+//    StatisticAllFiles = Q_NULLPTR;
 }
 
 void FileInfo::start(const QDir &dir){
-    QCoreApplication::processEvents();
+    //QCoreApplication::processEvents();
     QStringList listFile = dir.entryList(QDir::Files);
     maxPrBar += listFile.size();
     qint64 fileSize;
@@ -25,8 +25,8 @@ void FileInfo::start(const QDir &dir){
         sizeFiles[suffix].amount++;
         fileSize = fi.size();
         sizeFiles[suffix].size += fileSize;
-        StatisticAllFiles->amount++;
-        StatisticAllFiles->size += fileSize;
+        StatisticAllFiles.amount++;
+        StatisticAllFiles.size += fileSize;
     }
     QStringList listDir = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     foreach (auto tmpPath, listDir) {

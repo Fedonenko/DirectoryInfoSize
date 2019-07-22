@@ -7,7 +7,16 @@
 #include<QMap>
 #include<QDir>
 
-struct StatisticFiles;
+struct StatisticFiles
+{
+    quint64 size = 0; //общий размер файлов
+    quint64 amount = 0;//количество файлов
+    void clear(){
+        size = 0;
+        amount = 0;
+    }
+};
+//struct StatisticFiles;
 
 class FileInfo : public QObject
 {
@@ -15,7 +24,7 @@ class FileInfo : public QObject
 private:
     int maxPrBar;
     int valuePrBar;
-    StatisticFiles *StatisticAllFiles;
+    StatisticFiles StatisticAllFiles;
     QMap<QString, StatisticFiles> sizeFiles;
     const QDir dir;
 
@@ -29,18 +38,9 @@ private:
     QString fileSize(quint64);
 signals:
     void prBarInf(int, int);
-    void endFileInfo( StatisticFiles *, QMap<QString, StatisticFiles>);
+    void endFileInfo(const StatisticFiles ,const QMap<QString, StatisticFiles>);
 public slots:
     void slotFindFiles();
 };
 
-struct StatisticFiles
-{
-    quint64 size = 0; //общий размер файлов
-    quint64 amount = 0;//количество файлов
-    void clear(){
-        size = 0;
-        amount = 0;
-    }
-};
 #endif // FILEINFO_H

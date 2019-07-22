@@ -4,6 +4,8 @@
 #include<QtWidgets>
 #include"fileinfo.h"
 #include<QtConcurrent/QtConcurrent>
+Q_DECLARE_METATYPE(StatisticFiles)
+//Q_DECLARE_METATYPE(QMap<QString,StatisticFiles>)
 
 struct StatisticFiles;
 
@@ -23,6 +25,7 @@ private:
     QMap<QString, StatisticFiles> sizeFiles;
     StatisticFiles *StatisticAllFiles;
     FileInfo *fileInfo;
+    QThread *thread;
 
     QStringList listColumn;
     const QString allFiles = "Всего";
@@ -48,7 +51,7 @@ private slots:
     ///обновляет значение прогресБара, (max, value)
     void slotPrBarUpdate(int, int);
     ///получает статистику и выводит в таблицу
-    void slotEndFileInfo(StatisticFiles *StatisticAllFiles, QMap<QString, StatisticFiles>);
+    void slotEndFileInfo(const StatisticFiles StatisticAllFiles, QMap<QString, StatisticFiles>);
 signals:
 
 };

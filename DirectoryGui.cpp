@@ -16,6 +16,8 @@ DirectoryGui::DirectoryGui(QWidget *pwgt) : QWidget(pwgt),
         p_treeView->hideColumn(i);
     }
     //__________разный вариант исполнения при наличии больше чем одного потока
+    qRegisterMetaType<StatisticFiles>("StatisticFiles");
+    qRegisterMetaType<QMap<QString,StatisticFiles>>("QMap<QString,StatisticFiles>");
     if(QThread::idealThreadCount() > 1){
         connect(p_treeView, SIGNAL(clicked(QModelIndex)),
                 this,       SLOT(slotFindFilesThread(QModelIndex)));
@@ -102,16 +104,27 @@ void DirectoryGui::slotFindFilesThread(const QModelIndex &modelIndex){
     fileInfo = new FileInfo(dir);
     connect(fileInfo, SIGNAL(prBarInf(int,int)),
             this,     SLOT(slotPrBarUpdate(int,int)));
-    connect(fileInfo, SIGNAL(endFileInfo(StatisticFiles*,QMap<QString,StatisticFiles>)),
-            this,     SLOT(slotEndFileInfo(StatisticFiles*,QMap<QString,StatisticFiles>)));
-    fileInfo->slotFindFiles();
+
+    connect(fileInfo, SIGNAL(endFileInfo(StatisticFiles, QMap<QString,StatisticFiles>)),
+            this,     SLOT(slotEndFileInfo(StatisticFiles, QMap<QString,StatisticFiles>)));
+
+    QThread *thread = new QThread;
+    fileInfo->moveToThread(thread);
+
+    connect(thread,  SIGNAL(started()),
+            fileInfo, SLOT(slotFindFiles()));
+
+    thread->start();
+
+
+//    fileInfo->slotFindFiles();
     //findFilesThread(dir);
 }
 void DirectoryGui::slotPrBarUpdate(int max, int value){
     p_pBarFile->setMaximum(max);
     p_pBarFile->setValue(value);
 }
-void DirectoryGui::slotEndFileInfo(StatisticFiles *StatisticAllFiles, QMap<QString, StatisticFiles> sizeFiles){
+void DirectoryGui::slotEndFileInfo(const StatisticFiles StatisticAllFiles, QMap<QString, StatisticFiles> sizeFiles){
 //    if(allFilles->size == 0){
 //        return;
 //    }
@@ -133,9 +146,9 @@ void DirectoryGui::slotEndFileInfo(StatisticFiles *StatisticAllFiles, QMap<QStri
     }
 
     p_tab->insertRow(p_tab->rowCount());
-    p_tab->setItem(p_tab->rowCount()-1, 0, new QTableWidgetItem(fileSize(StatisticAllFiles->size)));
-    p_tab->setItem(p_tab->rowCount()-1, 1, new QTableWidgetItem(fileSize((StatisticAllFiles->amount > 0)?StatisticAllFiles->size/StatisticAllFiles->amount:0)));
-    p_tab->setItem(p_tab->rowCount()-1, 2, new QTableWidgetItem(QString::number(StatisticAllFiles->amount)));
+    p_tab->setItem(p_tab->rowCount()-1, 0, new QTableWidgetItem(fileSize(StatisticAllFiles.size)));
+    p_tab->setItem(p_tab->rowCount()-1, 1, new QTableWidgetItem(fileSize((StatisticAllFiles.amount > 0)?StatisticAllFiles.size/StatisticAllFiles.amount:0)));
+    p_tab->setItem(p_tab->rowCount()-1, 2, new QTableWidgetItem(QString::number(StatisticAllFiles.amount)));
     p_tab->setVerticalHeaderItem(p_tab->rowCount()-1, new QTableWidgetItem("Всего"));
 
     isDoFind = false;
