@@ -1,6 +1,7 @@
 #include "DirectoryGui.h"
 
-DirectoryGui::DirectoryGui(QWidget *pwgt) : QWidget(pwgt)
+DirectoryGui::DirectoryGui(QWidget *pwgt) : QWidget(pwgt),
+    fileInfo(Q_NULLPTR)
 {
     StatisticAllFiles = new StatisticFiles;
 
@@ -66,6 +67,9 @@ DirectoryGui::DirectoryGui(QWidget *pwgt) : QWidget(pwgt)
 }
 DirectoryGui::~DirectoryGui(){
     delete StatisticAllFiles;
+    if(!fileInfo){
+        delete fileInfo;
+    }
 }
 
 QString DirectoryGui::fileSize(quint64 n){
@@ -100,7 +104,7 @@ void DirectoryGui::slotFindFilesThread(const QModelIndex &modelIndex){
             this,     SLOT(slotPrBarUpdate(int,int)));
     connect(fileInfo, SIGNAL(endFileInfo(StatisticFiles*,QMap<QString,StatisticFiles>)),
             this,     SLOT(slotEndFileInfo(StatisticFiles*,QMap<QString,StatisticFiles>)));
-    fileInfo->slotFindFiles(dir);
+    fileInfo->slotFindFiles();
     //findFilesThread(dir);
 }
 void DirectoryGui::slotPrBarUpdate(int max, int value){
@@ -136,6 +140,8 @@ void DirectoryGui::slotEndFileInfo(StatisticFiles *StatisticAllFiles, QMap<QStri
 
     isDoFind = false;
     p_lblWait->clear();
+    delete fileInfo;
+    fileInfo = Q_NULLPTR;
 
     p_lblForPBFile->setText("Готов");
 

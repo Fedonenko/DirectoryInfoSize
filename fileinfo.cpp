@@ -1,13 +1,16 @@
 #include"fileinfo.h"
 
 FileInfo::FileInfo(QDir dir, QObject *parent) : QObject(parent),
-    dir(dir)//, maxPrBar(0), valuePrBar(0)
+    StatisticAllFiles(Q_NULLPTR), dir(dir) //, maxPrBar(0), valuePrBar(0)
 {
-    maxPrBar = 0;
+    maxPrBar = 1;
     valuePrBar = 0;
     StatisticAllFiles = new StatisticFiles;
 }
-FileInfo::~FileInfo(){}
+FileInfo::~FileInfo(){
+    delete StatisticAllFiles;
+    StatisticAllFiles = Q_NULLPTR;
+}
 
 void FileInfo::start(const QDir &dir){
     QCoreApplication::processEvents();
@@ -30,7 +33,7 @@ void FileInfo::start(const QDir &dir){
         start(QDir(dir.absoluteFilePath(tmpPath)));
     }
 }
-void FileInfo::slotFindFiles(const QDir &){
+void FileInfo::slotFindFiles(){
     if(!dir.entryList(QDir::Files).isEmpty() or !dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot).isEmpty()){
         start(dir);
         valuePrBar++;

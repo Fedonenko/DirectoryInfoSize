@@ -31,7 +31,7 @@ signals:
     void prBarInf(int, int);
     void endFileInfo( StatisticFiles *, QMap<QString, StatisticFiles>);
 public slots:
-    void slotFindFiles(const QDir&);
+    void slotFindFiles();
 };
 
 struct StatisticFiles
