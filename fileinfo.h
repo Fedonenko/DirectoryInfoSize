@@ -24,6 +24,7 @@ class FileInfo : public QObject
 private:
     ///для прокрутки событий при запуске в том же потоке, что б не замирало окно
     bool isThread;
+    bool isRun;
     int maxPrBar;
     int valuePrBar;
     StatisticFiles StatisticAllFiles;
@@ -47,6 +48,7 @@ signals:
 public slots:
     ///поиск файлов и сбор статистики по ним
     void slotFindFiles();
+    void slotStop();
 };
 
 #endif // FILEINFO_H

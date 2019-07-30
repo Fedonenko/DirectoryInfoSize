@@ -5,14 +5,20 @@ FileInfo::FileInfo(QDir dir, bool isThread, QObject *parent) : QObject(parent),
 {
     maxPrBar = 1;
     valuePrBar = 0;
+    isRun = true;
 }
 FileInfo::~FileInfo(){
 }
 
 void FileInfo::start(const QDir &dir){
-    if(!isThread){
-        QCoreApplication::processEvents();
+    if(!isRun){
+        return;
     }
+//    if(!isThread){
+        QCoreApplication::processEvents();
+//    }
+
+
     QStringList listFile = dir.entryList(QDir::Files);
     maxPrBar += listFile.size();
     qint64 fileSize;
@@ -31,6 +37,9 @@ void FileInfo::start(const QDir &dir){
     foreach (auto tmpPath, listDir) {
         start(QDir(dir.absoluteFilePath(tmpPath)));
     }
+}
+void FileInfo::slotStop(){
+    isRun = false;
 }
 void FileInfo::slotFindFiles(){
     if(!dir.entryList(QDir::Files).isEmpty() or !dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot).isEmpty()){

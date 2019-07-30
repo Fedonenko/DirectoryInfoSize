@@ -71,6 +71,17 @@ DirectoryGui::~DirectoryGui(){
 //    }
 
 }
+void DirectoryGui::closeEvent(QCloseEvent *){
+    if(thread){
+        emit stopped();
+        thread->quit();
+        thread->wait();
+        delete thread;
+        thread = Q_NULLPTR;
+    }
+
+    qDebug() << "Closed widget";
+}
 
 QString DirectoryGui::fileSize(quint64 n){
     int i = 0;
@@ -145,6 +156,8 @@ void DirectoryGui::slotFindFiles(const QModelIndex &modelIndex){
     if(QThread::idealThreadCount() > 1){
         thread = new QThread;
         fileInfo->moveToThread(thread);
+        connect(this, SIGNAL(stopped()),
+                fileInfo, SLOT(slotStop()));
         connect(thread,  SIGNAL(started()),
                 fileInfo, SLOT(slotFindFiles()));
         thread->start();

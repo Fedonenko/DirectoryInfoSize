@@ -32,6 +32,8 @@ private:
 public:
     DirectoryGui(QWidget *pwgt = Q_NULLPTR);
     ~DirectoryGui();
+protected:
+    virtual void closeEvent(QCloseEvent *);
 private:
     ///получает размер в байтах, возвращает в виде более удобночитабельной строки
     QString fileSize(quint64);
@@ -46,7 +48,7 @@ private slots:
     ///получает статистику и выводит в таблицу
     void slotEndFileInfo(const StatisticFiles StatisticAllFiles, QMap<QString, StatisticFiles>);
 signals:
-
+    void stopped();
 };
 
 
